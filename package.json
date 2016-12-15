@@ -1,0 +1,42 @@
+{
+  "name": "react-store-menu",
+  "version": "1.0.0",
+  "description": "A React App to list and show a dynamic menu. Like a showcase.",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "better-npm-run start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "betterScripts": {
+    "start": "react-scripts start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fcgomes92/react-store-menu.git"
+  },
+  "author": "@fcgomes92",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fcgomes92/react-store-menu/issues"
+  },
+  "homepage": "https://github.com/fcgomes92/react-store-menu#readme",
+  "dependencies": {
+    "babel-polyfill": "^6.20.0",
+    "classnames": "^2.2.5",
+    "material-ui": "^0.16.5",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "react-redux": "^5.0.1",
+    "react-router": "^3.0.0",
+    "react-router-redux": "^4.0.7",
+    "react-tap-event-plugin": "^2.0.1",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.1.0"
+  },
+  "devDependencies": {
+    "better-npm-run": "*",
+    "react-scripts": "*",
+    "redux-logger": "*"
+  }
+}
