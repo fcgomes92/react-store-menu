@@ -8,6 +8,9 @@ import Avatar from 'material-ui/Avatar';
 import Drawer from 'material-ui/Drawer';
 import {GridList, GridTile} from 'material-ui/GridList';
 import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
+import Search from 'material-ui/svg-icons/action/search';
+import KeyboardBackspace from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import {getWidth} from '../utils';
 import './App.min.css'
 
@@ -15,7 +18,7 @@ const classNames = require('classnames');
 
 class App extends Component {
     static propTypes = {
-        selectedGridTile: PropTypes.integer,
+        selectedGridTile: PropTypes.number,
         children: PropTypes.node,
     };
 
@@ -107,8 +110,12 @@ class App extends Component {
                     },
                 },
             ],
+            filterProducts: '',
             productsColumns: Math.trunc(getWidth() / 250),
             selectedGridTile: props.selectedGridTile | 0,
+            appbarStatus: {
+                searching: false,
+            }
         };
         this.handleResizeColumnSizes = this.handleResizeColumnSizes.bind(this);
     }
@@ -138,26 +145,65 @@ class App extends Component {
         })
     }
 
+    handleFilterProducts(filter) {
+        this.setState({
+            filterProducts: filter.toLowerCase(),
+        })
+    }
+
+    handleToggleSearchBar(event) {
+        const {appbarStatus} = this.state;
+        this.setState({
+            appbarStatus: {
+                searching: !appbarStatus.searching
+            }
+        });
+    }
+
+    handleCloseeSearchBar(event) {
+        this.setState({
+            appbarStatus: {
+                searching: false
+            }
+        });
+    }
+
     renderProducts() {
-        const {products, selectedGridTile, productsColumns} = this.state;
+        const {products, selectedGridTile, productsColumns, filterProducts} = this.state;
+
+        let renderedProducts = '';
+        if (filterProducts === '') {
+            renderedProducts = products
+                .filter((product) => (selectedGridTile === 0 || product.category.id === selectedGridTile))
+                .map((product) => (
+                    <GridTile key={product.id}
+                              style={{margin: 0, padding: 0,}}
+                              title={`${product.title} (${product.category.title})`}>
+                        <img src={product.img} alt="product"/>
+                    </GridTile>
+                ))
+        }
+        else {
+            renderedProducts = products
+                .filter((product) => (product.title.toLowerCase().indexOf(filterProducts) !== -1
+                && (selectedGridTile === 0
+                || product.category.id === selectedGridTile)))
+                .map((product) => (
+                    <GridTile key={product.id}
+                              style={{margin: 0, padding: 0,}}
+                              title={`${product.title} (${product.category.title})`}>
+                        <img src={product.img} alt="product"/>
+                    </GridTile>
+                ))
+        }
 
         return (
             <GridList style={{margin: 0, padding: 0,}}
                       cols={productsColumns}>
-                {products
-                    .filter((product) => (selectedGridTile === 0 || product.category.id === selectedGridTile))
-                    .map((product) => (
-                        <GridTile key={product.id}
-                                  style={{margin: 0, padding: 0,}}
-                                  title={`${product.title} (${product.category.title})`}>
-                            <img src={product.img} alt="product"/>
-                        </GridTile>
-                    ))
-                }
+                {renderedProducts}
             </GridList>
         );
     }
-
 
     renderCategoryTiles() {
         // let categories = Array.from(new Array(10), (val, index) => index + 1);
@@ -205,15 +251,54 @@ class App extends Component {
     }
 
     render() {
+        const {appbarStatus} = this.state;
         return (
             <main>
                 {/*<ResizeSensor onResize={this.handleResizeColumnSizes}/>*/}
                 <AppBar
+                    className={classNames('appBar', {
+                        searching: appbarStatus.searching,
+                    })}
                     iconElementRight={
-                        <Avatar src="https://scontent-grt2-1.xx.fbcdn.net/v/t1.0-9/15181357_1776011285983056_7062364725086917173_n.png?oh=bcc11f73e3754b463610b970bc2996a3&oe=58E70F07"/>
+                        <Search color="#FFF"/>
                     }
                     style={{position: 'fixed'}}
-                    onLeftIconButtonTouchTap={(event) => (this.handleMenuIconClick())}/>
+                    iconStyleRight={{margin: 'auto'}}
+                    iconStyleLeft={{margin: 'auto'}}
+                    onRightIconButtonTouchTap={(event) => {
+                        this.handleToggleSearchBar();
+                        document.getElementById('productFilter').focus();
+                    }}
+                    onLeftIconButtonTouchTap={(event) => (this.handleMenuIconClick())}
+                    title={"Ovelha Negra"}/>
+                <AppBar
+                    className={classNames('searchBar', {
+                        searching: appbarStatus.searching,
+                    })}
+                    iconElementLeft={
+                        <KeyboardBackspace/>
+                    }
+                    iconStyleRight={{margin: 'auto'}}
+                    iconStyleLeft={{margin: 'auto'}}
+                    titleStyle={{margin: 'auto', padding: '0 1% 0 1%'}}
+                    title={
+                        <div>
+                            <TextField onChange={(event => this.handleFilterProducts(event.target.value))} fullWidth={true}
+                                       id="productFilter" onKeyDown={(event) => {
+                                if (event.keyCode === 27) {
+                                    this.handleCloseeSearchBar()
+                                }
+                            }}/>
+                        </div>
+                    }
+                    iconElementRight={<Search/>}
+                    style={{position: 'fixed', backgroundColor: "#FFF"}}
+                    onLeftIconButtonTouchTap={(event) => (this.handleToggleSearchBar())}
+                    onRightIconButtonTouchTap={(event) => {
+                        this.handleToggleSearchBar();
+                        document.getElementById('productFilter').blur();
+                    }}/>
+
                 {this.renderDrawer()}
                 <Divider/>
                 <div className="content">
