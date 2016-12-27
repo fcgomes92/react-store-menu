@@ -13,4 +13,4 @@ The store has many categories and each product is related to a single category.
   
 Example hosted at: [GitHub Pages](https://fcgomes92.github.io/react-store-menu/)
 
-LICENSE: [MIT](blob/master/LICENSE)
+LICENSE: [MIT](LICENSE)
