@@ -63,3 +63,16 @@ main {
     opacity: 1;
   }
 }
+
+.product-dialog {
+
+  .product-dialog-content {
+    width: 100% !important;
+    max-width: none !important;
+
+    @media (min-width: 36em) {
+      width: 80% !important;
+    }
+
+  }
+}
