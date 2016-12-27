@@ -172,6 +172,7 @@ Sit non, nibh est sit. Justo sed dolor massa pede fermentum. Ac risus porttitor 
             filterProducts: '',
             productsColumns: Math.trunc(getWidth() / 250),
             selectedGridTile: props.selectedGridTile | 0,
+            aboutDialogOpen: false,
             appbarStatus: {
                 searching: false,
             }
@@ -229,6 +230,13 @@ Sit non, nibh est sit. Justo sed dolor massa pede fermentum. Ac risus porttitor 
             appbarStatus: {
                 searching: false
             }
+        });
+    }
+
+    handleToggleAboutDialog() {
+        const {aboutDialogOpen} = this.state;
+        this.setState({
+            aboutDialogOpen: !aboutDialogOpen,
         });
     }
 
@@ -312,6 +320,34 @@ Sit non, nibh est sit. Justo sed dolor massa pede fermentum. Ac risus porttitor 
         );
     };
 
+    renderAboutDialog() {
+        const {aboutDialogOpen} = this.state;
+        const actions = [
+            <FlatButton label="Fechar" onTouchTap={(event) => {
+                this.handleToggleAboutDialog()
+            }}/>,
+            <FlatButton primary={true} label="Encomendar" href={'https://m.me/1774447839472734'} target="_blank"/>
+        ];
+        return (
+            <Dialog
+                className='product-dialog'
+                contentClassName='product-dialog-content'
+                autoDetectWindowHeight={true}
+                titleStyle={{backgroundColor: 'rgb(255, 152, 0)', color: '#FFF'}}
+                bodyStyle={{paddingTop: '1em'}}
+                autoScrollBodyContent={true}
+                title={<div>{`Sobre a Ovelha`}</div>}
+                modal={false}
+                open={aboutDialogOpen}
+                actions={actions}
+                onRequestClose={(event) => {
+                    this.handleToggleAboutDialog()
+                }}>
+                <h3>{`Sobre`}</h3>
+            </Dialog>
+        )
+    }
+
     renderDrawer() {
         return (
             <Drawer open={this.state.menuDrawerOpen}
@@ -322,6 +358,11 @@ Sit non, nibh est sit. Justo sed dolor massa pede fermentum. Ac risus porttitor 
                         iconElementRight={
                             <Avatar src="https://scontent-grt2-1.xx.fbcdn.net/v/t1.0-9/15181357_1776011285983056_7062364725086917173_n.png?oh=bcc11f73e3754b463610b970bc2996a3&oe=58E70F07"/>
                         }/>
+                <List>
+                    <ListItem onTouchTap={(event) => {this.handleToggleAboutDialog()}}>{`Sobre a Ovelha`}</ListItem>
+                    <ListItem href={`https://m.me/1774447839472734`} target="_blank">{`Contato`}</ListItem>
+                </List>
+                {this.renderAboutDialog()}
             </Drawer>
         )
     }
